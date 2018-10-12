@@ -13,7 +13,7 @@
     
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"Website","@id":"http://dajeongChoi.github.io","author":{"@type":"Person","name":"Dajeong Choi","sameAs":[]},"name":"Dajeong's Blog","description":"About Web development, daily in japan etc...","url":"http://dajeongChoi.github.io","keywords":"hexo, PHP, Larvel"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"Website","@id":"http://dajeongChoi.github.io","author":{"@type":"Person","name":"Dajeong Choi","sameAs":["https://github.com/dajeongChoi","https://www.linkedin.com/profile/","mailto:dajeong9393@gmail.com"],"image":"cover.jpg"},"name":"Dajeong's Blog","description":"About Web development, daily in japan etc...","url":"http://dajeongChoi.github.io","keywords":"hexo, PHP, Larvel"}</script>
     <meta name="description" content="About Web development, daily in japan etc...">
 <meta name="keywords" content="hexo,PHP,Larvel">
 <meta property="og:type" content="blog">
@@ -30,6 +30,8 @@
     
         
     
+    
+        <meta property="og:image" content="http://dajeongChoi.github.io/assets/images/cover.jpg"/>
     
     
     
@@ -48,6 +50,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="1">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -60,6 +66,8 @@
                 href="#about">
         
         
+            <img class="header-picture" src="/assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
         </a>
     
 </header>
@@ -67,8 +75,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="1">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/cover.jpg" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Dajeong Choi</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>develop, tokyo, etc…</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -154,6 +177,33 @@
         </ul>
         
             <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/dajeongChoi" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="noopener" title="LinkedIn">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:dajeong9393@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-envelope-o" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
             
         </ul>
         
@@ -299,25 +349,37 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-remove"></i>
         </div>
         
+            <img id="about-card-picture" src="/assets/images/cover.jpg" alt="Author&#39;s picture"/>
+        
             <h4 id="about-card-name">Dajeong Choi</h4>
         
-            <div id="about-card-bio"><p>author.bio</p>
+            <div id="about-card-bio"><p>develop, tokyo, etc…</p>
 </div>
         
         
             <div id="about-card-job">
                 <i class="fa fa-briefcase"></i>
                 <br/>
-                <p>author.job</p>
+                <p>Web Developer</p>
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                tokyo, japan
+            </div>
         
     </div>
 </div>
