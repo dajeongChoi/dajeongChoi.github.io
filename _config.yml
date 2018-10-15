@@ -83,3 +83,7 @@ theme: tranquilpeak
 deploy:
   type: git
   repo: https://github.com/dajeongChoi/dajeongChoi.github.io.git
+
+# sitemap auto generator
+sitemap:
+  path: sitemap.xml

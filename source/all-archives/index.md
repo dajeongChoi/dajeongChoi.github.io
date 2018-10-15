@@ -1,5 +1,5 @@
 ---
-title: all-archives
-date: 2018-07-04 15:21:16
+title: "all-archives"
+layout: "all-archives"
 comments: false
 ---

@@ -1,5 +1,5 @@
 ---
-title: all-categories
-date: 2018-07-04 15:20:39
+title: "all-categories"
+layout: "all-categories"
 comments: false
 ---
