@@ -8,9 +8,6 @@ tags:
 - docker
 - infra
 - devOps
-keywords:
-- javascript
-- hexo
 metaAlignment: center
 thumbnailImagePosition: left
 thumbnailImage: http://drive.google.com/uc?export=view&id=1vYFhABydiUz68_awyIMluz3QBcHLowlj
@@ -39,7 +36,7 @@ docker, 컨테이너, 도커 이미지의 기본 개념에 대한 설명입니�
 또한 가상머신 이미지 안에 OS가 포함되어 용량도 크다. 이미지 용량이 커지면 이미지의 배포, 관리도 어려워진다.
 
 그래서 리눅스 컨테이너라는 개념이 등장하게 된다.
-가상머신과 달리 GuestOS가 없이 HostOS 위에서 자원을 공유하 실행되며 단순히 프로세스만 격리시키기 때문에 빠르다.
+가상머신과 달리 GuestOS가 없이 HostOS 위에서 자원을 공유하여 실행되며 단순히 프로세스만 격리시키기 때문에 빠르다.
 도커는 이 리눅스 컨테이너의 개념을 채용하여 개발되었으므로 역시 빠르고 이미지 용량이 크지않아 이미지 생성과 배포가 편하다.
 특히 [GitHub](https://github.com/)에서 소스를 push,pull하는 것처럼 도커도 [DockerHub](https://hub.docker.com/)라는 서비스를 제공하고 있어 이미지의 배포, 공유를 아주 쉽게 할 수있다!
 {% image center clear docker_container.png 90% 80% "가상머신과 도커 컨테이너 비교" %}
