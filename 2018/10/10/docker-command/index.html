@@ -1,0 +1,570 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Dajeong&#39;s Blog">
+    <title>docker 기본 명령어들 - Dajeong&#39;s Blog</title>
+    <meta name="author" content="Dajeong Choi">
+    
+        <meta name="keywords" content="hexo,PHP,Larvel,">
+    
+    
+        <link rel="icon" href="http://dajeongChoi.github.io/assets/images/favicon.ico">
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Dajeong Choi","sameAs":["https://github.com/dajeongChoi","https://www.linkedin.com/in/dajeong-choi-0261a0160/","mailto:dajeong9393@gmail.com"],"image":"logo.png"},"articleBody":"도커 설치부터 도커이미지 pull, 컨테이너 실행 등 기본 명령어들에 대해 설명합니다.\nInstall앞선 포스트에서 설명했듯이 도커는 리눅스 컨테이너를 이용하고 있으므로 리눅스 환경에서 동작한다.그래서 맥이나 윈도우에서 도커를 실행하기 위해서는 가상머신을 설치하고 그 위에 도커를 돌려야한다.귀찮게 가상머신까지 설치해야 하나 싶지만 그냥 도커에서 제공하는Docker for mac(Mac용),Docker for Window(Window용)를 깔고 실행해주면 된다.\nBasic Command설치 확인위 링크를 통해 도커를 깔았다면 아래 커맨드를 통해123docker --versiondocker-compose --versiondocker-machine --versionError없이 정보가 제대로 출력되는 것이 확인되면 정상적으로 설치가 된 것이다.docker외에도 도커 프로젝트인 docker-compose,docker-machine도 함께 설치된다.\n이미지 받아오기이미지는 DockerFile로 생성해서 써도 되고 DockerHub에서 pull해서 쓸 수 있다.일단 이미지를 pull해 실행시켜보자.12docker search centosdocker pull centos:latestsearch를 통해 원하는 이미지를 탐색할 수 있다.centos이미지를 검색하면 검색결과가 주욱 뜨는데 맨위에 뜬 official이미지를 받는다 :latest태그를 붙이면 최신버전을 받을 수 있고:6.8이렇게 원하는 버전을 지정해 받을 수도 있다.\n이미지 조회와 삭제다운받은 이미지를 조회하는 커맨드이다.123456# 조회docker images# 삭제docker image rm [imageID]# 또는docker rmi [imageID]\n컨테이너 생성과 실행컨테이너 실행은 run 명령어를 사용한다.123docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]# exampledocker run -it -p 8080:80 -name centosTest centos:latest /bin/bash아래는 run과 함께 쓰이는 옵션들이다.\n\n\n\n옵션\n설명\n\n\n\n\n-d\ndetached mode, 백그라운드 모드\n\n\n-p\n호스트와 컨테이너의 포트를 연결\n\n\n-v\n호스트와 컨테이너의 디렉토리 마운트\n\n\n-e\n컨테이너 내에서 사용할 환경변수 설정\n\n\n–name\n컨테이너 이름 설정\n\n\n–rm\n프로세스 종료시 컨테이너 자동 제거\n\n\n-it\n터미널 입력을 위한 옵션\n\n\n–link\n컨테이너 연결\n\n\n\n위에서 예시로 한 커맨드를 한번 살펴보면 centos를 /bin/bash쉘을 통해서 실행시킨다.bin/bash가 없으면 컨테이너는 생성되자마자 종료되어지므로 Command를 넘겨 주도록 하자.-p는 포트번호로 Host의 8080포트와 컨테이너의 80포트를 연결한다.-name은 컨테이너의 이름을 지정하는 옵션으로 생략하면 랜덤으로 지정된다.\n컨테이너 목록 확인실행 중인 컨테이너의 목록을 확인123docker container ls# 또는docker ps모든 컨테이너의 목록을 확인123docker container ls -a# 또는docker ps -a\n컨테이너 중지와 삭제1234# 중지docker stop [containerID or NAME]# 삭제docker rm [containerID or NAME]\n컨테이너를 삭제할 때 주의해야 할 것이 있다.컨테이너를 제거하는 것은 컨테이너에서 생성한 파일을 모두 삭제한다는 것을 의미한다.컨테이너 삭제 시 꼭 유지시켜야 하는 데이터의 경우 데이터 볼륨을 컨테이너에 추가해 별도로 관리할 수 있는데run 옵션에서 소개한 -v를 사용하여 호스트 디렉토리를 컨테이너에 마운트해 사용하는 방법이 있다.1docker run -it -d -v [host directory]:[container directory]\n실행중인 컨테이너 접속컨테이너를 -d옵션으로 백그라운드 실행시켰을 때컨테이너에 접속할 수 있는 명령어로 exec를 쓸 수 있다.run과 유사하지만 run은 컨테이너를 새로 만들어 실행하고 exec는 이미 실행 중인 컨테이너에 명령을 내린다는 차이점이 있다.123docker exec [options] [containerID] [command] [arg...]# exampledocker exec -it [containerID] /bin/bashbash쉘을 실행하여 완전한 권한을 얻는 방법 말고도 command를 바로실행할 수도 있음1docker exec -it [containerID] ls\n정리지금까지 사용해 본 커맨드에 대해 정리해 보았다.포스팅한 내용 외에도 수 많은 도커 명령어들이 있으므로 docker help를 통해 알아보고 써먹어 보자.\n","dateCreated":"2018-10-10T14:30:00+09:00","dateModified":"2018-10-15T16:36:01+09:00","datePublished":"2018-10-10T14:30:00+09:00","description":"도커 설치부터 도커이미지 pull, 컨테이너 실행 등 기본 명령어들에 대해 설명합니다.","headline":"docker 기본 명령어들","image":["http://drive.google.com/uc?export=view&id=1vYFhABydiUz68_awyIMluz3QBcHLowlj"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://dajeongChoi.github.io/2018/10/10/docker-command/"},"publisher":{"@type":"Organization","name":"Dajeong Choi","sameAs":["https://github.com/dajeongChoi","https://www.linkedin.com/in/dajeong-choi-0261a0160/","mailto:dajeong9393@gmail.com"],"image":"logo.png","logo":{"@type":"ImageObject","url":"logo.png"}},"url":"http://dajeongChoi.github.io/2018/10/10/docker-command/","keywords":"docker, infra, devOps","thumbnailUrl":"http://drive.google.com/uc?export=view&id=1vYFhABydiUz68_awyIMluz3QBcHLowlj"}</script>
+    <meta name="description" content="도커 설치부터 도커이미지 pull, 컨테이너 실행 등 기본 명령어들에 대해 설명합니다.">
+<meta name="keywords" content="docker,infra,devOps">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="docker 기본 명령어들">
+<meta property="og:url" content="http://dajeongChoi.github.io/2018/10/10/docker-command/index.html">
+<meta property="og:site_name" content="Dajeong&#39;s Blog">
+<meta property="og:description" content="도커 설치부터 도커이미지 pull, 컨테이너 실행 등 기본 명령어들에 대해 설명합니다.">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-10-15T07:36:01.234Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker 기본 명령어들">
+<meta name="twitter:description" content="도커 설치부터 도커이미지 pull, 컨테이너 실행 등 기본 명령어들에 대해 설명합니다.">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="http://dajeongChoi.github.io/assets/images/logo.png"/>
+    
+    
+        <meta property="og:image" content="http://drive.google.com/uc?export=view&amp;id=1vYFhABydiUz68_awyIMluz3QBcHLowlj"/>
+        <meta class="swiftype" name="image" data-type="enum" content="http://drive.google.com/uc?export=view&amp;id=1vYFhABydiUz68_awyIMluz3QBcHLowlj" />
+    
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-1udptkpril81ozu8ifd8zpujn7ipu7lefxsiu5gxx0dpnzntdx6dusvki3ao.min.css">
+    <!--STYLES END-->
+    
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-117627975-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/ ">Dajeong&#39;s Blog</a>
+    </div>
+    
+        
+            <a  class="header-right-picture "
+                href="#about">
+        
+        
+            <img class="header-picture" src="/assets/images/logo.png" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about">
+                    <img class="sidebar-profile-picture" src="/assets/images/logo.png" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Dajeong Choi</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>develop, tokyo, etc…</p>
+</h5>
+                
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/ "
+                            
+                            title="Home"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-categories"
+                            
+                            title="Categories"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-tags"
+                            
+                            title="Tags"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="/all-archives"
+                            
+                            title="Archives"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link open-algolia-search"
+                             href="#search"
+                            
+                            title="Search"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link "
+                             href="#about"
+                            
+                            title="About"
+                        >
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://github.com/dajeongChoi" target="_blank" rel="noopener" title="GitHub">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="https://www.linkedin.com/in/dajeong-choi-0261a0160/" target="_blank" rel="noopener" title="LinkedIn">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a  class="sidebar-button-link " href="mailto:dajeong9393@gmail.com" target="_blank" rel="noopener" title="Mail">
+                    
+                        <i class="sidebar-button-icon fa fa-lg fa-envelope-o" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+            <div id="main" data-behavior="4"
+                 class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-center">
+    
+        <h1 class="post-title">
+            docker 기본 명령어들
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2018-10-10T14:30:00+09:00">
+	
+		    Oct 10, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Server/">Server</a>, <a class="category-link" href="/categories/Server/Docker/">Docker</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <p>도커 설치부터 도커이미지 pull, 컨테이너 실행 등 기본 명령어들에 대해 설명합니다.<br><a id="more"></a><br><h1 id="table-of-contents">Table of Contents</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Install"><span class="toc-text">Install</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Basic-Command"><span class="toc-text">Basic Command</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#설치-확인"><span class="toc-text">설치 확인</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#이미지-받아오기"><span class="toc-text">이미지 받아오기</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#이미지-조회와-삭제"><span class="toc-text">이미지 조회와 삭제</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#컨테이너-생성과-실행"><span class="toc-text">컨테이너 생성과 실행</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#컨테이너-목록-확인"><span class="toc-text">컨테이너 목록 확인</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#컨테이너-중지와-삭제"><span class="toc-text">컨테이너 중지와 삭제</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#실행중인-컨테이너-접속"><span class="toc-text">실행중인 컨테이너 접속</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#정리"><span class="toc-text">정리</span></a></li></ol></p>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><p>앞선 포스트에서 설명했듯이 도커는 리눅스 컨테이너를 이용하고 있으므로 리눅스 환경에서 동작한다.<br>그래서 맥이나 윈도우에서 도커를 실행하기 위해서는 가상머신을 설치하고 그 위에 도커를 돌려야한다.<br>귀찮게 가상머신까지 설치해야 하나 싶지만 그냥 도커에서 제공하는<br><a href="https://docs.docker.com/docker-for-mac/" target="_blank" rel="noopener">Docker for mac</a>(Mac용),<a href="https://docs.docker.com/docker-for-windows/" target="_blank" rel="noopener">Docker for Window</a>(Window용)를 깔고 실행해주면 된다.</p>
+<h2 id="Basic-Command"><a href="#Basic-Command" class="headerlink" title="Basic Command"></a>Basic Command</h2><h3 id="설치-확인"><a href="#설치-확인" class="headerlink" title="설치 확인"></a>설치 확인</h3><p>위 링크를 통해 도커를 깔았다면 아래 커맨드를 통해<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker --version</span><br><span class="line">docker-compose --version</span><br><span class="line">docker-machine --version</span><br></pre></td></tr></table></figure><br>Error없이 정보가 제대로 출력되는 것이 확인되면 정상적으로 설치가 된 것이다.<br><code>docker</code>외에도 도커 프로젝트인 <code>docker-compose</code>,<code>docker-machine</code>도 함께 설치된다.</p>
+<h3 id="이미지-받아오기"><a href="#이미지-받아오기" class="headerlink" title="이미지 받아오기"></a>이미지 받아오기</h3><p>이미지는 <code>DockerFile</code>로 생성해서 써도 되고 <a href="https://hub.docker.com/" target="_blank" rel="noopener">DockerHub</a>에서 <code>pull</code>해서 쓸 수 있다.<br>일단 이미지를 <code>pull</code>해 실행시켜보자.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker search centos</span><br><span class="line">docker pull centos:latest</span><br></pre></td></tr></table></figure><br>search를 통해 원하는 이미지를 탐색할 수 있다.<br>centos이미지를 검색하면 검색결과가 주욱 뜨는데 맨위에 뜬 official이미지를 받는다 <code>:latest</code>태그를 붙이면 최신버전을 받을 수 있고<code>:6.8</code>이렇게 원하는 버전을 지정해 받을 수도 있다.</p>
+<h3 id="이미지-조회와-삭제"><a href="#이미지-조회와-삭제" class="headerlink" title="이미지 조회와 삭제"></a>이미지 조회와 삭제</h3><p>다운받은 이미지를 조회하는 커맨드이다.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 조회</span></span><br><span class="line">docker images</span><br><span class="line"><span class="comment"># 삭제</span></span><br><span class="line">docker image rm [imageID]</span><br><span class="line"><span class="comment"># 또는</span></span><br><span class="line">docker rmi [imageID]</span><br></pre></td></tr></table></figure></p>
+<h3 id="컨테이너-생성과-실행"><a href="#컨테이너-생성과-실행" class="headerlink" title="컨테이너 생성과 실행"></a>컨테이너 생성과 실행</h3><p>컨테이너 실행은 run 명령어를 사용한다.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]</span><br><span class="line"><span class="comment"># example</span></span><br><span class="line">docker run -it -p 8080:80 -name centosTest centos:latest /bin/bash</span><br></pre></td></tr></table></figure><br>아래는 <code>run</code>과 함께 쓰이는 옵션들이다.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">옵션</th>
+<th style="text-align:center">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">-d</td>
+<td style="text-align:center">detached mode, 백그라운드 모드</td>
+</tr>
+<tr>
+<td style="text-align:center">-p</td>
+<td style="text-align:center">호스트와 컨테이너의 포트를 연결</td>
+</tr>
+<tr>
+<td style="text-align:center">-v</td>
+<td style="text-align:center">호스트와 컨테이너의 디렉토리 마운트</td>
+</tr>
+<tr>
+<td style="text-align:center">-e</td>
+<td style="text-align:center">컨테이너 내에서 사용할 환경변수 설정</td>
+</tr>
+<tr>
+<td style="text-align:center">–name</td>
+<td style="text-align:center">컨테이너 이름 설정</td>
+</tr>
+<tr>
+<td style="text-align:center">–rm</td>
+<td style="text-align:center">프로세스 종료시 컨테이너 자동 제거</td>
+</tr>
+<tr>
+<td style="text-align:center">-it</td>
+<td style="text-align:center">터미널 입력을 위한 옵션</td>
+</tr>
+<tr>
+<td style="text-align:center">–link</td>
+<td style="text-align:center">컨테이너 연결</td>
+</tr>
+</tbody>
+</table>
+<p>위에서 예시로 한 커맨드를 한번 살펴보면 centos를 <code>/bin/bash</code>쉘을 통해서 실행시킨다.<br><code>bin/bash</code>가 없으면 컨테이너는 생성되자마자 종료되어지므로 Command를 넘겨 주도록 하자.<br>-p는 포트번호로 Host의 8080포트와 컨테이너의 80포트를 연결한다.<br>-name은 컨테이너의 이름을 지정하는 옵션으로 생략하면 랜덤으로 지정된다.</p>
+<h3 id="컨테이너-목록-확인"><a href="#컨테이너-목록-확인" class="headerlink" title="컨테이너 목록 확인"></a>컨테이너 목록 확인</h3><p>실행 중인 컨테이너의 목록을 확인<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker container ls</span><br><span class="line"><span class="comment"># 또는</span></span><br><span class="line">docker ps</span><br></pre></td></tr></table></figure><br>모든 컨테이너의 목록을 확인<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker container ls -a</span><br><span class="line"><span class="comment"># 또는</span></span><br><span class="line">docker ps -a</span><br></pre></td></tr></table></figure></p>
+<h3 id="컨테이너-중지와-삭제"><a href="#컨테이너-중지와-삭제" class="headerlink" title="컨테이너 중지와 삭제"></a>컨테이너 중지와 삭제</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 중지</span></span><br><span class="line">docker stop [containerID or NAME]</span><br><span class="line"><span class="comment"># 삭제</span></span><br><span class="line">docker rm [containerID or NAME]</span><br></pre></td></tr></table></figure>
+<p>컨테이너를 삭제할 때 주의해야 할 것이 있다.<br>컨테이너를 제거하는 것은 컨테이너에서 생성한 파일을 모두 삭제한다는 것을 의미한다.<br>컨테이너 삭제 시 꼭 유지시켜야 하는 데이터의 경우 데이터 볼륨을 컨테이너에 추가해 별도로 관리할 수 있는데<br><code>run</code> 옵션에서 소개한 -v를 사용하여 호스트 디렉토리를 컨테이너에 마운트해 사용하는 방법이 있다.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -it -d -v [host directory]:[container directory]</span><br></pre></td></tr></table></figure></p>
+<h3 id="실행중인-컨테이너-접속"><a href="#실행중인-컨테이너-접속" class="headerlink" title="실행중인 컨테이너 접속"></a>실행중인 컨테이너 접속</h3><p>컨테이너를 <code>-d</code>옵션으로 백그라운드 실행시켰을 때<br>컨테이너에 접속할 수 있는 명령어로 <code>exec</code>를 쓸 수 있다.<br><code>run</code>과 유사하지만 <code>run</code>은 컨테이너를 새로 만들어 실행하고 <code>exec</code>는 이미 실행 중인 컨테이너에 명령을 내린다는 차이점이 있다.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> [options] [containerID] [<span class="built_in">command</span>] [arg...]</span><br><span class="line"><span class="comment"># example</span></span><br><span class="line">docker <span class="built_in">exec</span> -it [containerID] /bin/bash</span><br></pre></td></tr></table></figure><br>bash쉘을 실행하여 완전한 권한을 얻는 방법 말고도 command를 바로실행할 수도 있음<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it [containerID] ls</span><br></pre></td></tr></table></figure></p>
+<h2 id="정리"><a href="#정리" class="headerlink" title="정리"></a>정리</h2><p>지금까지 사용해 본 커맨드에 대해 정리해 보았다.<br>포스팅한 내용 외에도 수 많은 도커 명령어들이 있으므로 <code>docker help</code>를 통해 알아보고 써먹어 보자.</p>
+
+            
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/devOps/">devOps</a> <a class="tag tag--primary tag--small t-link" href="/tags/docker/">docker</a> <a class="tag tag--primary tag--small t-link" href="/tags/infra/">infra</a>
+
+            </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/20/docker시작하기/" data-tooltip="docker시작하기" aria-label="NEXT: docker시작하기">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://dajeongChoi.github.io/2018/10/10/docker-command/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://dajeongChoi.github.io/2018/10/10/docker-command/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://dajeongChoi.github.io/2018/10/10/docker-command/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Table of Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+        
+        
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2018 Dajeong Choi. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    <a class="post-action-btn btn btn--disabled">
+                
+                    <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                    <a class="post-action-btn btn btn--default tooltip--top" href="/2018/08/20/docker시작하기/" data-tooltip="docker시작하기" aria-label="NEXT: docker시작하기">
+                
+                    <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://dajeongChoi.github.io/2018/10/10/docker-command/" title="Share on Facebook">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://dajeongChoi.github.io/2018/10/10/docker-command/" title="Share on Twitter">
+                    <i class="fa fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="new" href="https://plus.google.com/share?url=http://dajeongChoi.github.io/2018/10/10/docker-command/" title="Share on Google+">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#table-of-contents" aria-label="Table of Contents">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+                </div>
+                <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+    <i id="btn-close-shareoptions" class="fa fa-close"></i>
+    <ul class="share-options">
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://dajeongChoi.github.io/2018/10/10/docker-command/">
+                    <i class="fa fa-facebook-official" aria-hidden="true"></i><span>Share on Facebook</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http://dajeongChoi.github.io/2018/10/10/docker-command/">
+                    <i class="fa fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                </a>
+            </li>
+        
+            
+            
+            <li class="share-option">
+                <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=http://dajeongChoi.github.io/2018/10/10/docker-command/">
+                    <i class="fa fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-remove"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/logo.png" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Dajeong Choi</h4>
+        
+            <div id="about-card-bio"><p>develop, tokyo, etc…</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br/>
+                <p>Web Developer</p>
+
+            </div>
+        
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker"></i>
+                <br/>
+                tokyo, japan
+            </div>
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-yhuo2grt8r7qkqumzgjoglkfbicl1thukjgmla6jopu56zpcowfedi5zjcor.min.js"></script>
+<!--SCRIPTS END-->
+
+    
+
+
+
+    </body>
+</html>

@@ -8,7 +8,15 @@
 
     <url>
         <loc>http://dajeongChoi.github.io/2018/08/20/docker%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0/</loc>
-        <lastmod>2018-10-12T08:53:43.312Z</lastmod>
+        <lastmod>2018-10-15T07:38:07.677Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://dajeongChoi.github.io/2018/10/10/docker-command/</loc>
+        <lastmod>2018-10-15T07:36:01.234Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

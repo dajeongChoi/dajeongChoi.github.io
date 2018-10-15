@@ -7,22 +7,22 @@
     </url>
     
     <url>
-        <loc>http://dajeongChoi.github.io/all-archives/</loc>
-        <lastmod>2018-10-12T08:00:21.424Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-    
-    <url>
         <loc>http://dajeongChoi.github.io/all-tags/</loc>
-        <lastmod>2018-10-12T08:00:11.742Z</lastmod>
+        <lastmod>2018-10-15T01:16:39.136Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <url>
         <loc>http://dajeongChoi.github.io/all-categories/</loc>
-        <lastmod>2018-10-12T07:59:57.954Z</lastmod>
+        <lastmod>2018-10-15T01:16:39.135Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <url>
+        <loc>http://dajeongChoi.github.io/all-archives/</loc>
+        <lastmod>2018-10-15T01:16:39.134Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
